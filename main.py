@@ -8,6 +8,8 @@ from pydantic import BaseModel
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import load_iris
 
+
+
 app = FastAPI(title="Iris Classifier API", description="A simple ML model API using FastAPI")
 
 # Define request model with validation
