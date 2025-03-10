@@ -10,6 +10,8 @@ from sklearn.datasets import load_iris
 
 
 
+
+
 app = FastAPI(title="Iris Classifier API", description="A simple ML model API using FastAPI")
 
 class PredictionRequest(BaseModel):
