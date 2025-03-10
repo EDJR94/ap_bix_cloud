@@ -12,28 +12,23 @@ from sklearn.datasets import load_iris
 
 app = FastAPI(title="Iris Classifier API", description="A simple ML model API using FastAPI")
 
-# Define request model with validation
 class PredictionRequest(BaseModel):
     features: List[float]
 
-# Define response model
 class PredictionResponse(BaseModel):
     prediction: int
     class_name: str
     probability: float
 
-# Train a simple model (in production, you'd load a pre-trained model)
+# In prod, you would load a model in model registry or in repo
 def train_model():
     print("Training model...")
-    # Load the Iris dataset as an example
     iris = load_iris()
     X, y = iris.data, iris.target
     
-    # Train a random forest classifier
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X, y)
     
-    # Save the model
     with open('model.pkl', 'wb') as f:
         pickle.dump(model, f)
     
@@ -47,7 +42,6 @@ if os.path.exists('model.pkl'):
 else:
     model = train_model()
 
-# Load iris dataset for class names
 iris = load_iris()
 
 @app.post("/predict", response_model=PredictionResponse)
@@ -56,12 +50,9 @@ async def predict(request: PredictionRequest):
     if len(request.features) != 4:
         raise HTTPException(status_code=400, detail="Iris model expects 4 features")
     
-    # Make prediction
     features = np.array(request.features).reshape(1, -1)
     prediction = int(model.predict(features)[0])
     probabilities = model.predict_proba(features)[0]
-    
-    # Get the probability for the predicted class
     probability = float(probabilities[prediction])
     
     # Map prediction to class name
